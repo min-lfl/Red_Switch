@@ -1,4 +1,4 @@
-C51 COMPILER V9.54   SERVO                                                                 12/11/2025 09:50:14 PAGE 1   
+C51 COMPILER V9.54   SERVO                                                                 12/11/2025 10:08:49 PAGE 1   
 
 
 C51 COMPILER V9.54, COMPILATION OF MODULE SERVO
@@ -37,39 +37,49 @@ line level    source
   27          //2.5ms ---------> 180度
   28          //映射角度值
   29          void Servo_Set(unsigned char Angle){
-  30   1              Actual=Angle/45+1;
-  31   1      }
-  32          
-  33          
-  34          //中断函数
-  35          void Timer0_Routine() interrupt 1
-  36          {
-  37   1              static  unsigned int T0Count;
-  38   1              TL0 = 0x33;             //设置定时初值
-  39   1              TH0 = 0xFE;             //设置定时初值
-  40   1              
-  41   1              T0Count++;
-  42   1              if(T0Count>=40)  //20毫秒,每次500微秒，40次20毫秒
-  43   1              {
-  44   2                      T0Count=0;
-  45   2              }
-  46   1              
-  47   1              if(Actual>T0Count){
-  48   2                      PWM_IO=1;
-  49   2              }else{
-  50   2                      PWM_IO=0;
-  51   2              }
-  52   1      }
+  30   1              unsigned char ticks;  //中间变量
+  31   1      
+  32   1          if(Angle > 180) Angle = 180;
+  33   1          // 0.5ms + Angle*(2.0ms/180)  ≈ (Angle/45+1)*0.5ms
+  34   1          ticks = Angle / 45 + 1;       // 1~5，对应 0.5~2.5ms
+  35   1      
+  36   1          ET0 = 0;
+  37   1          Actual = ticks;
+  38   1          ET0 = 1;
+  39   1      }
+  40          
+  41          
+  42          //中断函数
+  43          void Timer0_Routine(void) interrupt 1
+  44          {
+  45   1          static unsigned char cnt = 0;
+  46   1      
+  47   1          TL0 = 0x33;
+  48   1          TH0 = 0xFE;
+  49   1      
+  50   1              //采用首尾置位的方式减小cpu负担
+  51   1          // 周期开始：拉高
+  52   1          if(cnt == 0)
+  53   1              PWM_IO = 1;
+  54   1      
+C51 COMPILER V9.54   SERVO                                                                 12/11/2025 10:08:49 PAGE 2   
 
+  55   1          // 到了应该结束高电平的位置：拉低
+  56   1          if(cnt == Actual)
+  57   1              PWM_IO = 0;
+  58   1      
+  59   1          cnt++;
+  60   1          if(cnt >= 40)      // 40*0.5ms=20ms
+  61   1              cnt = 0;
+  62   1      }
 
-C51 COMPILER V9.54   SERVO                                                                 12/11/2025 09:50:14 PAGE 2   
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =     86    ----
+   CODE SIZE        =     84    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
-   DATA SIZE        =      3    ----
+   DATA SIZE        =      2    ----
    IDATA SIZE       =   ----    ----
    BIT SIZE         =   ----    ----
 END OF MODULE INFORMATION.

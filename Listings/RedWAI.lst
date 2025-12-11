@@ -1,4 +1,4 @@
-C51 COMPILER V9.54   REDWAI                                                                12/11/2025 09:50:14 PAGE 1   
+C51 COMPILER V9.54   REDWAI                                                                12/11/2025 10:08:49 PAGE 1   
 
 
 C51 COMPILER V9.54, COMPILATION OF MODULE REDWAI
@@ -62,7 +62,7 @@ line level    source
   45   2                      
   46   2                      
   47   2                      if(Time>13000 && Time<14000){                   //收到开始码，状态置1
-C51 COMPILER V9.54   REDWAI                                                                12/11/2025 09:50:14 PAGE 2   
+C51 COMPILER V9.54   REDWAI                                                                12/11/2025 10:08:49 PAGE 2   
 
   48   3                              Red_status=2;
   49   3                              
@@ -126,7 +126,7 @@ line level    source
  106   1              set_InterruptTimer(0x00);
  107   1              DataFlag=1;  //数据标志位置1
  108   1      }
-C51 COMPILER V9.54   REDWAI                                                                12/11/2025 09:50:14 PAGE 3   
+C51 COMPILER V9.54   REDWAI                                                                12/11/2025 10:08:49 PAGE 3   
 
  109          
  110          /**
@@ -190,7 +190,7 @@ line level    source
  167                  * @brief                用于打开停止定时器的计时
  168                  * @param                0为停止，1为打开
  169                  * @retval               无
-C51 COMPILER V9.54   REDWAI                                                                12/11/2025 09:50:14 PAGE 4   
+C51 COMPILER V9.54   REDWAI                                                                12/11/2025 10:08:49 PAGE 4   
 
  170                  */
  171          void run_InterruptTimer(unsigned char Code){

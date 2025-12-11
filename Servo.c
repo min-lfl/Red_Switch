@@ -27,26 +27,36 @@ void Servo_Init(){
 //2.5ms ---------> 180度
 //映射角度值
 void Servo_Set(unsigned char Angle){
-	Actual=Angle/45+1;
+	unsigned char ticks;  //中间变量
+
+    if(Angle > 180) Angle = 180;
+    // 0.5ms + Angle*(2.0ms/180)  ≈ (Angle/45+1)*0.5ms
+    ticks = Angle / 45 + 1;       // 1~5，对应 0.5~2.5ms
+
+    ET0 = 0;
+    Actual = ticks;
+    ET0 = 1;
 }
 
 
 //中断函数
-void Timer0_Routine() interrupt 1
+void Timer0_Routine(void) interrupt 1
 {
-	static  unsigned int T0Count;
-	TL0 = 0x33;		//设置定时初值
-	TH0 = 0xFE;		//设置定时初值
-	
-	T0Count++;
-	if(T0Count>=40)  //20毫秒,每次500微秒，40次20毫秒
-	{
-		T0Count=0;
-	}
-	
-	if(Actual>T0Count){
-		PWM_IO=1;
-	}else{
-		PWM_IO=0;
-	}
+    static unsigned char cnt = 0;
+
+    TL0 = 0x33;
+    TH0 = 0xFE;
+
+	//采用首尾置位的方式减小cpu负担
+    // 周期开始：拉高
+    if(cnt == 0)
+        PWM_IO = 1;
+
+    // 到了应该结束高电平的位置：拉低
+    if(cnt == Actual)
+        PWM_IO = 0;
+
+    cnt++;
+    if(cnt >= 40)      // 40*0.5ms=20ms
+        cnt = 0;
 }
