@@ -6,7 +6,7 @@ git commit -m "$1"
 if [ $? -eq 0 ]; then
     echo "提交成功，开始推送所有分支..."
     # 推送所有分支到 github 远程仓库
-    git push github --all
+    git push Red_Switch --all
     if [ $? -eq 0 ]; then
         echo "推送所有分支完成: $1"
     else
