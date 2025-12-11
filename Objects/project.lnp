@@ -1,0 +1,10 @@
+".\Objects\main.obj",
+".\Objects\delay.obj",
+".\Objects\lcd1602.obj",
+".\Objects\Switch0000.obj",
+".\Objects\Timer0.obj",
+".\Objects\Servo.obj",
+".\Objects\RedWAI.obj" 
+TO ".\Objects\project" 
+PRINT(".\Listings\project.m51") RAMSIZE(256) 
+DISABLEWARNING (16) 
