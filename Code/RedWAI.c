@@ -1,4 +1,4 @@
-#include <REGX52.H> //c52库
+#include <stc15.h>  // 或者 #include "stc15.h"
 #include <INTRINS.H> //标准变量库
 
 #include <LCD1602.H>

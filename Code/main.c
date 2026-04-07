@@ -1,4 +1,4 @@
-#include <REGX52.H>
+#include <stc15.h>  // 或者 #include "stc15.h"
 #include <INTRINS.H>
 
 #include <LCD1602.H>

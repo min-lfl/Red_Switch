@@ -1,4 +1,4 @@
-#include <REGX52.H> //c52库
+#include <stc15.h>  // 或者 #include "stc15.h"
 
 //定义中间变量
 unsigned char middle;
@@ -9,10 +9,10 @@ unsigned char Detection_key()
 {
 	unsigned char KeyNumber=0;
 	
-	if(P3_1==0){KeyNumber=1;}
-	if(P3_0==0){KeyNumber=2;}//这里其实是电路板上把k1和k2接反了
-	if(P3_2==0){KeyNumber=3;}
-	if(P3_3==0){KeyNumber=4;}
+	if(P3^1==0){KeyNumber=1;}
+	if(P3^0==0){KeyNumber=2;}//这里其实是电路板上把k1和k2接反了
+	if(P3^2==0){KeyNumber=3;}
+	if(P3^3==0){KeyNumber=4;}
 	
 	return KeyNumber;
 }

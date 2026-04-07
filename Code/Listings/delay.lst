@@ -1,14 +1,14 @@
-C51 COMPILER V9.54   DELAY                                                                 12/11/2025 10:08:48 PAGE 1   
+C51 COMPILER V9.60.7.0   DELAY                                                             04/07/2026 16:04:01 PAGE 1   
 
 
-C51 COMPILER V9.54, COMPILATION OF MODULE DELAY
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE DELAY
 OBJECT MODULE PLACED IN .\Objects\delay.obj
-COMPILER INVOKED BY: E:\Keil5 C51\Keil5 C51\C51\BIN\C51.EXE delay.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\
-                    -Listings\delay.lst) OBJECT(.\Objects\delay.obj)
+COMPILER INVOKED BY: D:\Keil_v5\C51\C51\BIN\C51.EXE delay.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings
+                    -\delay.lst) TABS(2) OBJECT(.\Objects\delay.obj)
 
 line level    source
 
-   1          #include <REGX52.H> //c52库
+   1          #include <stc15.h>  // 或者 #include "stc15.h"
    2          #include <INTRINS.H> //标准变量库
    3          
    4          //标准的循环延迟

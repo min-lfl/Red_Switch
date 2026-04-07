@@ -1,4 +1,4 @@
-#include <REGX52.H> //c52库
+#include <stc15.h>  // 或者 #include "stc15.h"
 
 
 //1毫秒触发一次的定时器，让他触发就自加，触发多少次就是多少毫秒
