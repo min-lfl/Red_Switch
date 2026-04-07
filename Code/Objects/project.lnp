@@ -4,7 +4,8 @@
 ".\Objects\Switch0000.obj",
 ".\Objects\Timer0.obj",
 ".\Objects\Servo.obj",
-".\Objects\RedWAI.obj" 
+".\Objects\RedWAI.obj",
+".\Objects\uart.obj" 
 TO ".\Objects\project" 
 PRINT(".\Listings\project.m51") RAMSIZE(256) 
 DISABLEWARNING (16) 

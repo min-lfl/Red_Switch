@@ -5,10 +5,11 @@
 void delay(unsigned int xms) {
     unsigned char i, j;
     while (xms--) {
-        i = 1;          // 中层循环次数（精确计算）
-        j = 248;        // 内层循环次数
+        // 以下代码段可实现约 1ms 的延时 (@12.000MHz)
+        i = 12;          // 对应 12MHz 的参数 1
+        j = 169;         // 对应 12MHz 的参数 2
         do {
-            while (--j); // 内层：248次循环，约996μs
-        } while (--i);   // 中层+内层总约1000μs（1ms）
+            while (--j);
+        } while (--i);
     }
 }

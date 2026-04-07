@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.7.0   DELAY                                                             04/07/2026 16:04:01 PAGE 1   
+C51 COMPILER V9.60.7.0   DELAY                                                             04/07/2026 19:01:46 PAGE 1   
 
 
 C51 COMPILER V9.60.7.0, COMPILATION OF MODULE DELAY
@@ -15,13 +15,14 @@ line level    source
    5          void delay(unsigned int xms) {
    6   1          unsigned char i, j;
    7   1          while (xms--) {
-   8   2              i = 1;          // 中层循环次数（精确计算）
-   9   2              j = 248;        // 内层循环次数
-  10   2              do {
-  11   3                  while (--j); // 内层：248次循环，约996μs
-  12   3              } while (--i);   // 中层+内层总约1000μs（1ms）
-  13   2          }
-  14   1      }
+   8   2              // 以下代码段可实现约 1ms 的延时 (@12.000MHz)
+   9   2              i = 12;          // 对应 12MHz 的参数 1
+  10   2              j = 169;         // 对应 12MHz 的参数 2
+  11   2              do {
+  12   3                  while (--j);
+  13   3              } while (--i);
+  14   2          }
+  15   1      }
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE

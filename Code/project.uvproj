@@ -441,6 +441,16 @@
               <FileType>5</FileType>
               <FilePath>.\RedWAI.h</FilePath>
             </File>
+            <File>
+              <FileName>uart.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\uart.h</FilePath>
+            </File>
+            <File>
+              <FileName>uart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\uart.c</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>

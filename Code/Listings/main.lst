@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.7.0   MAIN                                                              04/07/2026 16:04:01 PAGE 1   
+C51 COMPILER V9.60.7.0   MAIN                                                              04/07/2026 19:01:46 PAGE 1   
 
 
 C51 COMPILER V9.60.7.0, COMPILATION OF MODULE MAIN
@@ -16,54 +16,63 @@ line level    source
    6          #include <SWITCH0000.H>
    7          #include <Servo.H>
    8          #include <RedWAI.H>
-   9          
-  10          unsigned char Code=0;
-  11          
-  12          void main(){
-  13   1        LCD_Init();
-  14   1        Servo_Init();
-  15   1        RedWAI_init();
-  16   1        while(1){
-  17   2      //    Servo_Set(0);
-  18   2      //    delay(3000);
-  19   2      //    Servo_Set(45);
-  20   2      //    delay(3000);
-  21   2      //    Servo_Set(90);
-  22   2      //    delay(3000);
-  23   2      //    Servo_Set(135);
-  24   2      //    delay(3000);
-  25   2      //    Servo_Set(180);
-  26   2      //    delay(3000);
-  27   2          Code=get_Red_Data();
-  28   2          if(Code!=0){
-  29   3            LCD_ShowHexNum(2,1,Code,2);
-  30   3            if(Code==0x47){
-  31   4              Servo_Set(90);
-  32   4            }
-  33   3            if(Code==0x07){
-  34   4              Servo_Set(45);
-  35   4              delay(300);
-  36   4              Servo_Set(90);
-  37   4            }
-  38   3            if(Code==0x45){
-  39   4              Servo_Set(135);
-  40   4              delay(300);
-  41   4              Servo_Set(90);
-  42   4            }
-  43   3          }
-  44   2          
-  45   2        }
-  46   1      }
-  47          
-  48          
+   9          #include <UART.H>
+  10          
+  11          unsigned char Code=0;
+  12          sbit LED=P2^7;
+  13          
+  14          void main(){
+  15   1        LCD_Init();
+  16   1        Servo_Init();
+  17   1        RedWAI_init();
+  18   1        Uart_Init();    
+  19   1        while(1){
+  20   2          LED=1;
+  21   2          delay(3000);
+  22   2          LED=0;
+  23   2          delay(3000);
+  24   2          printf("lfl");
+  25   2      
+  26   2      //    Servo_Set(0);
+  27   2      //    delay(3000);
+  28   2      //    Servo_Set(45);
+  29   2      //    delay(3000);
+  30   2      //    Servo_Set(90);
+  31   2      //    delay(3000);
+  32   2      //    Servo_Set(135);
+  33   2      //    delay(3000);
+  34   2      //    Servo_Set(180);
+  35   2      //    delay(3000);
+  36   2      //    Code=get_Red_Data();
+  37   2      //    if(Code!=0){
+  38   2      //      LCD_ShowHexNum(2,1,Code,2);
+  39   2      //      if(Code==0x47){
+  40   2      //        Servo_Set(90);
+  41   2      //      }
+  42   2      //      if(Code==0x07){
+  43   2      //        Servo_Set(45);
+  44   2      //        delay(300);
+  45   2      //        Servo_Set(90);
+  46   2      //      }
+  47   2      //      if(Code==0x45){
+  48   2      //        Servo_Set(135);
+  49   2      //        delay(300);
+  50   2      //        Servo_Set(90);
+  51   2      //      }
+  52   2      //    }
+  53   2          
+  54   2        }
+C51 COMPILER V9.60.7.0   MAIN                                                              04/07/2026 19:01:46 PAGE 2   
+
+  55   1      }
+  56          
+  57          
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =     87    ----
-   CONSTANT SIZE    =   ----    ----
+   CODE SIZE        =     41    ----
+   CONSTANT SIZE    =      4    ----
    XDATA SIZE       =   ----    ----
-C51 COMPILER V9.60.7.0   MAIN                                                              04/07/2026 16:04:01 PAGE 2   
-
    PDATA SIZE       =   ----    ----
    DATA SIZE        =      1    ----
    IDATA SIZE       =   ----    ----
