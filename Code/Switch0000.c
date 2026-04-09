@@ -1,4 +1,4 @@
-#include <stc15.h>  // 或者 #include "stc15.h"
+#include <stc15w408as.H>
 
 //定义中间变量
 unsigned char middle;

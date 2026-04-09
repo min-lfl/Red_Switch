@@ -1,4 +1,4 @@
-#include <stc15.h>  // 或者 #include "stc15.h"
+#include <stc15w408as.H>
 
 //全局变量区
 sbit PWM_IO=P1^3;

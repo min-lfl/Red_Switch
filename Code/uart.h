@@ -1,7 +1,7 @@
 #ifndef __UART_H__
 #define __UART_H__
 
-#include <stc15.h>  // 包含 STC15W 系列头文件
+#include <stc15w408as.H>
 
 // ================= 配置区 =================
 #define RX_BUF_SIZE 16 // 缓冲区大小建议设为 2 的幂次方

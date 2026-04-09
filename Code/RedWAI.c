@@ -1,9 +1,7 @@
-#include <stc15.h>  // 或者 #include "stc15.h"
+#include <stc15w408as.H>
 #include <INTRINS.H> //标准变量库
+#include <RedWAI.H>
 
-#include <LCD1602.H>
-#include <INTRINS.H>
-#include <UART.H>
 #include <DELAY.H>
 
 
@@ -101,7 +99,7 @@ void Interrupt_Routine() interrupt 0
 	*/
 void RedWAI_init(){
 	Interrupt_init();
-	InterruptTimer2_init();
+	InterruptTimer1_init();
 }
 
 /**
@@ -143,8 +141,8 @@ unsigned char  get_Red_Data(){
 	*/
 void Interrupt_init(){
 	IT0=1;				//设置为下降沿触发
-	IE0=0;     		//中断标志位
 	EX0=1;				//打开EX0中断
+	IE0=0;     		//中断标志位
 	EA=1;					//打开总中断
 	PX0=1;      	//设置优先级高
 }
@@ -154,33 +152,16 @@ void Interrupt_init(){
 	* @param		无
 	* @retval		无
 	*/
-void InterruptTimer2_init(){
-	TMOD &= 0x0F;		//设置定时器模式
-	TMOD |= 0x10;		//设置定时器模式
-	TH1 = 0x00;			//设置定时初值
-	TL1 = 0x00;			//设置定时初值
-	TF1 = 0;				//清除TF0标志
-	TR1 = 0;				//定时器0停止计时
-//	ET1=1;    		//允许定时器0中断
+void InterruptTimer1_init(void){
+    AUXR &= 0xBF;		// 定时器时钟12T模式
+    TMOD &= 0x0F;		
+    TMOD |= 0x10;       // 设置为模式1 (16位非自动重装) 或者 模式0但在STC中设为长周期
+    TH1 = 0x00;			// 从0开始数
+    TL1 = 0x99;			
+    TF1 = 0;			
+	TR1 = 0;			// 不开始计时
 }
 
-///**
-//  * @brief  定时器1初始化 (12MHz 晶振, 12T模式)
-//  * @note   每个计数脉冲 = 1微秒，非常适合计算红外脉宽
-//  */
-//void Timer1_Init_12MHz() {
-//    TMOD &= 0x0F;    // 清除定时器1模式位
-//    TMOD |= 0x10;    // 设置定时器1为模式1 (16位定时/计数器)
-//    
-//    TH1 = 0x00;      // 清零高8位
-//    TL1 = 0x00;      // 清零低8位
-//    
-//    TF1 = 0;         // 清除溢出标志
-//    TR1 = 0;         // 初始状态停止计时
-//    
-//    // 如果是STC单片机，确保它运行在12T模式以匹配1us/计数的逻辑
-//    // AUXR &= 0xBF; // (可选) 强制定时器1为12T模式
-//}
 
 /**
 	* @brief		给定时器写入值，一般在开始计时时写入0
@@ -188,8 +169,8 @@ void InterruptTimer2_init(){
 	* @retval		无
 	*/
 void set_InterruptTimer(unsigned int Time){
-	TH1=Time/256;
-	TL1=Time%256;
+	TH1=(unsigned char)(Time>>8);
+	TL1=(unsigned char)Time;
 }
 /**
 	* @brief		用于打开停止定时器的计时
@@ -220,11 +201,12 @@ void run_InterruptTimer(unsigned char Code){
   * @param  无
   * @retval 取出的时间值，单位us (12MHz时计数值直接等于微秒)
   */
-unsigned int read_InterruptTimer(){
+unsigned int read_InterruptTimer(void){
     unsigned int Num = 0;
-    Num = (TH1 << 8) | TL1;  // 合成16位计数值
+    Num = ((unsigned int)TH1 << 8) | TL1; // 合成16位计数值
     return Num;              // 12MHz下，1个计数就等于1us，直接返回即可
 }
+
 //###############################################################################################
 
 

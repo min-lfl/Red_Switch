@@ -1,4 +1,4 @@
-#include <stc15.h>  // 或者 #include "stc15.h"
+#include <stc15w408as.H>
 #include <INTRINS.H> //标准变量库
 
 //标准的循环延迟

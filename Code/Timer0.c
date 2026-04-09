@@ -1,4 +1,4 @@
-#include <stc15.h>  // 或者 #include "stc15.h"
+#include <stc15w408as.H>
 
 
 //1毫秒触发一次的定时器，让他触发就自加，触发多少次就是多少毫秒

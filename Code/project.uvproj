@@ -382,6 +382,11 @@
               <FilePath>.\main.c</FilePath>
             </File>
             <File>
+              <FileName>stc15w408as.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\stc15w408as.h</FilePath>
+            </File>
+            <File>
               <FileName>delay.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\delay.c</FilePath>
