@@ -4,31 +4,22 @@
 
 #include <DELAY.H>
 
-
+//调试用的灯
 sbit LED=P2^5;
-
-//############################---V---定时器和中断相关函数---V-----#######################################
-void Interrupt_init();  										//初始化外部中断
-void InterruptTimer2_init();  							//初始化定时器
-void set_InterruptTimer(unsigned int Time);	//写入定时器初值
-void run_InterruptTimer(unsigned char Code);//启停计时
-unsigned int read_InterruptTimer();					//读取定时器计时
-
-//############################---V---红外相关函数---V-----###############################################
-void RedWAI_init();													//红外初始化（执行一次就好）
-void pData_init();													//内部函数，用于准备接收下一个按键
-unsigned char get_Red_Data();								//外部函数，用于输出按键值，无按键时输出0
-
+//调试用时间缓存区
+unsigned int timeing=0;		
 
 //############################---V---全局变量区---V-----#################################################
-unsigned int Time;  												//用于读取定时器时间
+unsigned int Time=0;  												//用于读取定时器时间
 unsigned char Red_status=0;  								//状态码判断状态码进入某种工作模式，0为空闲，1为等待，2为接收
 
-unsigned char Data[4];											//用来存放数据，Data[0]为地址码，Data[1]为地址码反码，Data[1]为数据码，Data[3]为地址码反码
+unsigned char Data[4]={0};											//用来存放数据，Data[0]为地址码，Data[1]为地址码反码，Data[1]为数据码，Data[3]为地址码反码
 unsigned char pData=0;											//上面数组的索引号，每接收一位加1
 
 unsigned char DataFlag=0;  									//数据标志位，置1说明读取到了数据，读取后清零
 unsigned char restartFlag=0;  							//重发标志位，收到代表检测到重发置为1，读取后清零
+
+
 
 //############################---V---主函数区---V-----###################################################
 void Interrupt_Routine() interrupt 0
@@ -48,12 +39,12 @@ void Interrupt_Routine() interrupt 0
 	else if(Red_status==1){
 		Time=read_InterruptTimer();
 		set_InterruptTimer(0x00);
+
 		
-		
-		if(Time>13000 && Time<14000){     	 	//收到开始码，状态置1
+		if(Time>12000 && Time<15000){     	 	//收到开始码，状态置1
 			Red_status=2;
-			LED=0;
-			delay(500);
+//			LED=0;
+//			delay(500);
 			
 		}else if(Time>10750 && Time<11750){		//收到按住码，重发标志位置1
 			restartFlag=1;
@@ -71,14 +62,14 @@ void Interrupt_Routine() interrupt 0
 		set_InterruptTimer(0x00);
 		
 		//等于0时
-		if(Time>620 && Time<1520){  
+		if(Time>750 && Time<1650){  
 			Data[pData/8]&=~(0x01<<(pData%8));
 			pData++;
 			if(pData>=32){pData_init();}
 		}
 		
 		//等于1时
-		else if(Time>1750 && Time<2650){  
+		else if(Time>1900 && Time<2450){  
 			Data[pData/8]|=0x01<<(pData%8);
 			pData++;
 			if(pData>=32){pData_init();}
@@ -98,8 +89,8 @@ void Interrupt_Routine() interrupt 0
 	* @retval		无
 	*/
 void RedWAI_init(){
-	Interrupt_init();
-	InterruptTimer1_init();
+	Interrupt0_init();
+	Timer0_Init();
 }
 
 /**
@@ -139,7 +130,7 @@ unsigned char  get_Red_Data(){
 	* @param		无
 	* @retval		无
 	*/
-void Interrupt_init(){
+void Interrupt0_init(){
 	IT0=1;				//设置为下降沿触发
 	EX0=1;				//打开EX0中断
 	IE0=0;     		//中断标志位
@@ -152,14 +143,14 @@ void Interrupt_init(){
 	* @param		无
 	* @retval		无
 	*/
-void InterruptTimer1_init(void){
-    AUXR &= 0xBF;		// 定时器时钟12T模式
-    TMOD &= 0x0F;		
-    TMOD |= 0x10;       // 设置为模式1 (16位非自动重装) 或者 模式0但在STC中设为长周期
-    TH1 = 0x00;			// 从0开始数
-    TL1 = 0x99;			
-    TF1 = 0;			
-	TR1 = 0;			// 不开始计时
+void Timer0_Init(void)		//65536微秒@12.000MHz
+{
+	AUXR &= 0x7F;			//定时器时钟12T模式
+	TMOD &= 0xF0;			//设置定时器模式
+	TL0 = 0x00;				//设置定时初始值
+	TH0 = 0x00;				//设置定时初始值
+	TF0 = 0;				//清除TF0标志
+	TR0 = 1;				//定时器0开始计时
 }
 
 
@@ -169,8 +160,8 @@ void InterruptTimer1_init(void){
 	* @retval		无
 	*/
 void set_InterruptTimer(unsigned int Time){
-	TH1=(unsigned char)(Time>>8);
-	TL1=(unsigned char)Time;
+	TH0=Time/256;
+	TL0=Time%256;
 }
 /**
 	* @brief		用于打开停止定时器的计时
@@ -179,9 +170,9 @@ void set_InterruptTimer(unsigned int Time){
 	*/
 void run_InterruptTimer(unsigned char Code){
 	if(Code==1){
-		TR1 = 1;
+		TR0 = 1;
 	}else{
-		TR1 = 0;
+		TR0 = 0;
 	}
 }
 
@@ -203,7 +194,9 @@ void run_InterruptTimer(unsigned char Code){
   */
 unsigned int read_InterruptTimer(void){
     unsigned int Num = 0;
-    Num = ((unsigned int)TH1 << 8) | TL1; // 合成16位计数值
+    Num = ((unsigned int)TH0 << 8) | TL0; // 合成16位计数值
+			//把调试值传出
+		timeing=Num;
     return Num;              // 12MHz下，1个计数就等于1us，直接返回即可
 }
 
