@@ -9,7 +9,7 @@
 #include <UART.H>
 
 unsigned char Code=0;
-sbit LED=P2^7;
+sbit LED=P2^5;
 
 void main(){
 	LCD_Init();
@@ -17,12 +17,12 @@ void main(){
 	RedWAI_init();
 	Uart_Init();		
 	while(1){
-		LED=1;
-		delay(3000);
-		LED=0;
-		delay(3000);
-		printf("lfl");
 
+		LED=1;
+		Code=get_Red_Data();
+//		if(Code!=0){
+//			printf("%d \t\n",(int)Code);
+//		}
 //		Servo_Set(0);
 //		delay(3000);
 //		Servo_Set(45);

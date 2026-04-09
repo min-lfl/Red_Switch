@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.7.0   MAIN                                                              04/07/2026 19:01:46 PAGE 1   
+C51 COMPILER V9.60.7.0   MAIN                                                              04/09/2026 10:09:02 PAGE 1   
 
 
 C51 COMPILER V9.60.7.0, COMPILATION OF MODULE MAIN
@@ -19,7 +19,7 @@ line level    source
    9          #include <UART.H>
   10          
   11          unsigned char Code=0;
-  12          sbit LED=P2^7;
+  12          sbit LED=P2^5;
   13          
   14          void main(){
   15   1        LCD_Init();
@@ -27,12 +27,12 @@ line level    source
   17   1        RedWAI_init();
   18   1        Uart_Init();    
   19   1        while(1){
-  20   2          LED=1;
-  21   2          delay(3000);
-  22   2          LED=0;
-  23   2          delay(3000);
-  24   2          printf("lfl");
-  25   2      
+  20   2      
+  21   2          LED=1;
+  22   2          Code=get_Red_Data();
+  23   2      //    if(Code!=0){
+  24   2      //      printf("%d \t\n",(int)Code);
+  25   2      //    }
   26   2      //    Servo_Set(0);
   27   2      //    delay(3000);
   28   2      //    Servo_Set(45);
@@ -62,7 +62,7 @@ line level    source
   52   2      //    }
   53   2          
   54   2        }
-C51 COMPILER V9.60.7.0   MAIN                                                              04/07/2026 19:01:46 PAGE 2   
+C51 COMPILER V9.60.7.0   MAIN                                                              04/09/2026 10:09:02 PAGE 2   
 
   55   1      }
   56          
@@ -70,8 +70,8 @@ line level    source
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =     41    ----
-   CONSTANT SIZE    =      4    ----
+   CODE SIZE        =     21    ----
+   CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
    DATA SIZE        =      1    ----
