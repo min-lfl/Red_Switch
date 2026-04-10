@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.7.0   MAIN                                                              04/09/2026 21:48:33 PAGE 1   
+C51 COMPILER V9.60.7.0   MAIN                                                              04/10/2026 21:41:40 PAGE 1   
 
 
 C51 COMPILER V9.60.7.0, COMPILATION OF MODULE MAIN
@@ -20,78 +20,100 @@ line level    source
   10          
   11          unsigned char Code=0;
   12          sbit LED=P2^5;
-  13          extern unsigned int timeing;
-  14          extern unsigned char Red_status;
-  15          extern unsigned char Data[4];
-  16          void main(){
-  17   1      //  LCD_Init();
-  18   1      //  Servo_Init();
-  19   1        RedWAI_init();
-  20   1        Uart_Init();  
-  21   1      
-  22   1        while(1){
-  23   2          
-  24   2          LED=1;
-  25   2          Code=get_Red_Data();
-  26   2          if(Code!=0){
-  27   3            TR0=0;
-  28   3            printf("%d \t\n",(int)Code);
-  29   3            TR0=1;
-  30   3          }
-  31   2          if(Data[0]!=0){
-  32   3            printf("Data0:%d \t\n",(int)Data[0]);
-  33   3            printf("Data1:%d \t\n",(int)Data[1]);
-  34   3            printf("Data2:%d \t\n",(int)Data[2]);
-  35   3            printf("Data3:%d \t\n",(int)Data[3]);
-  36   3          }
-  37   2      //    TR0=0;
-  38   2      //    printf("time:%u \t\n",(unsigned int)timeing);
-  39   2      //    printf("status:%d \t\n",(int)Red_status);
-  40   2      //    delay(10);
-  41   2      //    TR0=1;
-  42   2      //    printf("%d \t\n",(int)read_InterruptTimer());
-  43   2      //    Servo_Set(0);
-  44   2      //    delay(3000);
-  45   2      //    Servo_Set(45);
-  46   2      //    delay(3000);
-  47   2      //    Servo_Set(90);
-  48   2      //    delay(3000);
-  49   2      //    Servo_Set(135);
-  50   2      //    delay(3000);
-  51   2      //    Servo_Set(180);
-  52   2      //    delay(3000);
-  53   2      //    Code=get_Red_Data();
-  54   2      //    if(Code!=0){
-C51 COMPILER V9.60.7.0   MAIN                                                              04/09/2026 21:48:33 PAGE 2   
+  13          
+  14          extern unsigned int Time;
+  15          extern unsigned int timeing;
+  16          unsigned int timeing_old;
+  17          extern unsigned char Red_status;
+  18          extern unsigned char Data[4];
+  19          void main(){
+  20   1            P3M0 = 0x00; P3M1 = 0x04; //P3.2高阻抗输入
+  21   1      //  LCD_Init();
+  22   1      //  Servo_Init();
+  23   1        RedWAI_init();
+  24   1        Uart_Init();  
+  25   1      
+  26   1        while(1){
+  27   2          
+  28   2          LED=1;
+  29   2          Code=get_Red_Data();
+  30   2          if(Code!=0){
+  31   3            TR0=0;
+  32   3            printf("%d \t\n",(int)Code);
+  33   3            TR0=1;
+  34   3          }
+  35   2      //    if(Data[0]!=0){
+  36   2      //      printf("Data0:%d \t\n",(int)Data[0]);
+  37   2      //      printf("Data1:%d \t\n",(int)Data[1]);
+  38   2      //      printf("Data2:%d \t\n",(int)Data[2]);
+  39   2      //      printf("Data3:%d \t\n",(int)Data[3]);
+  40   2      //    }
+  41   2          
+  42   2          //测试起始位后脉宽
+  43   2      //    if(timeing_old!=timeing){
+  44   2      //      printf("time:%u \t\n",(unsigned int)timeing);
+  45   2      //      timeing_old=timeing;
+  46   2      //    }
+  47   2          
+  48   2      //    //开始写计时电路的原理验证
+  49   2      //    set_InterruptTimer(0x00); //设定初值
+  50   2      //    run_InterruptTimer(1);    //开启定时器
+  51   2      //    delay(65);
+  52   2      //    run_InterruptTimer(0);    //关闭定时器
+  53   2      //    Time=read_InterruptTimer();
+  54   2      //    
+C51 COMPILER V9.60.7.0   MAIN                                                              04/10/2026 21:41:40 PAGE 2   
 
-  55   2      //      LCD_ShowHexNum(2,1,Code,2);
-  56   2      //      if(Code==0x47){
-  57   2      //        Servo_Set(90);
-  58   2      //      }
-  59   2      //      if(Code==0x07){
-  60   2      //        Servo_Set(45);
-  61   2      //        delay(300);
-  62   2      //        Servo_Set(90);
-  63   2      //      }
-  64   2      //      if(Code==0x45){
-  65   2      //        Servo_Set(135);
-  66   2      //        delay(300);
-  67   2      //        Servo_Set(90);
-  68   2      //      }
-  69   2      //    }
-  70   2          
-  71   2        }
-  72   1      }
-  73          
-  74          
+  55   2      //    printf("time:%u \t\n",(unsigned int)Time);
+  56   2      //    
+  57   2          
+  58   2          
+  59   2      //    TR0=0;
+  60   2      //    printf("time:%u \t\n",(unsigned int)timeing);
+  61   2      //    printf("status:%d \t\n",(int)Red_status);
+  62   2      //    delay(10);
+  63   2      //    TR0=1;
+  64   2      //    printf("%d \t\n",(int)read_InterruptTimer());
+  65   2      //    Servo_Set(0);
+  66   2      //    delay(3000);
+  67   2      //    Servo_Set(45);
+  68   2      //    delay(3000);
+  69   2      //    Servo_Set(90);
+  70   2      //    delay(3000);
+  71   2      //    Servo_Set(135);
+  72   2      //    delay(3000);
+  73   2      //    Servo_Set(180);
+  74   2      //    delay(3000);
+  75   2      //    Code=get_Red_Data();
+  76   2      //    if(Code!=0){
+  77   2      //      LCD_ShowHexNum(2,1,Code,2);
+  78   2      //      if(Code==0x47){
+  79   2      //        Servo_Set(90);
+  80   2      //      }
+  81   2      //      if(Code==0x07){
+  82   2      //        Servo_Set(45);
+  83   2      //        delay(300);
+  84   2      //        Servo_Set(90);
+  85   2      //      }
+  86   2      //      if(Code==0x45){
+  87   2      //        Servo_Set(135);
+  88   2      //        delay(300);
+  89   2      //        Servo_Set(90);
+  90   2      //      }
+  91   2      //    }
+  92   2          
+  93   2        }
+  94   1      }
+  95          
+  96          
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    100    ----
-   CONSTANT SIZE    =     54    ----
+   CODE SIZE        =     43    ----
+   CONSTANT SIZE    =      6    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
-   DATA SIZE        =      1    ----
+   DATA SIZE        =      3    ----
    IDATA SIZE       =   ----    ----
    BIT SIZE         =   ----    ----
 END OF MODULE INFORMATION.
