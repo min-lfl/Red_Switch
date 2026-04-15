@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.7.0   REDWAI                                                            04/10/2026 21:41:41 PAGE 1   
+C51 COMPILER V9.60.7.0   REDWAI                                                            04/15/2026 22:05:13 PAGE 1   
 
 
 C51 COMPILER V9.60.7.0, COMPILATION OF MODULE REDWAI
@@ -42,225 +42,232 @@ line level    source
              -###
   27          void Interrupt_Routine() interrupt 0
   28          {
-  29   1      //  LED=0;
-  30   1        Debug=~Debug;
-  31   1        //状态为0时
-  32   1        if(Red_status==0){
-  33   2          Red_status=1;
-  34   2      
-  35   2          set_InterruptTimer(0x00); //把定时器装载0
-  36   2          run_InterruptTimer(1);    //开启定时器
-  37   2        }
-  38   1        
-  39   1        
-  40   1        //状态为1时
-  41   1        else if(Red_status==1){
-  42   2          run_InterruptTimer(0);    //关闭定时器
-  43   2          Time=read_InterruptTimer();
-  44   2      //    timeing=Time;
-  45   2          
-  46   2          if(Time>12000 && Time<15000){   //收到开始码，状态置1
-  47   3      //      LED=0;
-  48   3      //      delay(500);
-C51 COMPILER V9.60.7.0   REDWAI                                                            04/10/2026 21:41:41 PAGE 2   
+  29   1        // TR0=0 放在最开头，只要进中断，第一时间停止定时器，防止读数过程定时器还
+             -在跑
+  30   1        TR0 = 0; 
+  31   1        
+  32   1        if(Red_status == 0){
+  33   2          Red_status = 1;
+  34   2          TH0 = 0; TL0 = 0; // 清零定时器
+  35   2          TR0 = 1;          // 开启定时器
+  36   2        }
+  37   1        else if(Red_status == 1){
+  38   2          Time = ((unsigned int)TH0 << 8) | TL0; // 读取定时器
+  39   2          
+  40   2          if(Time > 12000 && Time < 16000){ // 收到13.5ms左右的引导码
+  41   3            Red_status = 2;
+  42   3            TH0 = 0; TL0 = 0; // 成功匹配，清零定时器，准备测下一个数据位
+  43   3            TR0 = 1;
+  44   3          }else{
+  45   3            Red_status = 0; // 匹配失败，归零
+  46   3            // 这里不需要再开启TR0，等待下一个下降沿触发状态0
+  47   3          }
+C51 COMPILER V9.60.7.0   REDWAI                                                            04/15/2026 22:05:13 PAGE 2   
 
-  49   3            Red_status=2;
-  50   3            
-  51   3            set_InterruptTimer(0x00);     //设定初值
-  52   3            run_InterruptTimer(1);        //开启定时器
-  53   3          }else{                          //都不是，继续回到空闲状态
-  54   3            run_InterruptTimer(0);    //关闭定时器
-  55   3            Red_status=0;
-  56   3          }
-  57   2        }
-  58   1        
-  59   1        //状态为2时
-  60   1        else if(Red_status==2){
-  61   2          //读取计时并且开始清零计时
-  62   2          run_InterruptTimer(0);      //关闭定时器
-  63   2          Time=read_InterruptTimer(); //读取定时器值
-  64   2          
-  65   2      //    timeing=Time;
-  66   2      
-  67   2          
-  68   2          //等于0时
-  69   2          if(Time>600 && Time<1600){  
-  70   3      //      LED=0;
-  71   3      //      delay(500);
-  72   3            set_InterruptTimer(0x00); //设定初值
-  73   3            run_InterruptTimer(1);    //开启定时器
-  74   3            Data[pData/8]&=~(0x01<<(pData%8));
-  75   3            pData++;
-  76   3            if(pData>=32){pData_init();}
-  77   3          }
-  78   2          
-  79   2          //等于1时
-  80   2          else if(Time>1900 && Time<2450){  
-  81   3      //      LED=0;
-  82   3      //      delay(500);
-  83   3            set_InterruptTimer(0x00); //设定初值
-  84   3            run_InterruptTimer(1);    //开启定时器
-  85   3            
-  86   3            Data[pData/8]|=0x01<<(pData%8);
-  87   3            pData++;
-  88   3            if(pData>=32){pData_init();}
-  89   3          }
-  90   2          //如果数据错误时，结束接收，进入空闲模式等待开始信号
-  91   2          else{
-  92   3      //      timeing=Time;
-  93   3      //      LED=0;
-  94   3      //      delay(500);
-  95   3            run_InterruptTimer(0);    //关闭定时器
-  96   3            Red_status=0;
-  97   3          }
-  98   2        }
-  99   1      }
- 100          
- 101          //############################---V---红外相关函数---V-----########################################
- 102          /**
- 103            * @brief    初始化，打开外部中断和定时器1
- 104            * @param    无
- 105            * @retval   无
- 106            */
- 107          void RedWAI_init(){
- 108   1        Interrupt0_init();
- 109   1        Timer0_Init();
- 110   1      }
-C51 COMPILER V9.60.7.0   REDWAI                                                            04/10/2026 21:41:41 PAGE 3   
-
- 111          
- 112          /**
- 113            * @brief    在索引号溢出后的操作，停止接收，状态变为0空闲，标志位置1表示接收
+  48   2        }
+  49   1        else if(Red_status == 2){
+  50   2          Time = ((unsigned int)TH0 << 8) | TL0;
+  51   2      //    timeing = Time; // 用于串口打印调试
+  52   2          
+  53   2          if(Time > 500 && Time < 1600){ // 收到 Bit 0 (约 1.12ms / 1120)
+  54   3      //      LED=1;
+  55   3            Data[pData/8] &= ~(0x01 << (pData%8));
+  56   3            pData++;
+  57   3                  
+  58   3            TH0 = 0; TL0 = 0; // 测完立刻清零
+  59   3            TR0 = 1;          // 继续测下一个位
+  60   3          }
+  61   2          else if(Time > 1700 && Time < 2800){ // 收到 Bit 1 (约 2.25ms / 2250)
+  62   3      //      LED=1;
+  63   3            Data[pData/8] |= (0x01 << (pData%8));
+  64   3            pData++;
+  65   3                  
+  66   3            TH0 = 0; TL0 = 0; // 测完立刻清零
+  67   3            TR0 = 1;
+  68   3          }
+  69   2          else{
+  70   3            // 如果读到的时间既不是Bit0也不是Bit1，说明传输出错或结束了
+  71   3            Red_status = 0;
+  72   3                  pData = 0; // 接收错误，把位数也清零
+  73   3          }
+  74   2          
+  75   2          // 接收满32位，通知主函数处理
+  76   2          if(pData >= 32){
+  77   3            pData = 0;
+  78   3            Red_status = 0; 
+  79   3            DataFlag=1;
+  80   3            // 这里可以设置一个标志位，比如 IR_Recv_OK = 1;
+  81   3                  // 然后在主函数 while(1) 里判断 IR_Recv_OK == 1 再去点亮LED
+  82   3          }
+  83   2        }
+  84   1      }
+  85          
+  86          //############################---V---红外相关函数---V-----########################################
+  87          /**
+  88            * @brief    初始化，打开外部中断和定时器1
+  89            * @param    无
+  90            * @retval   无
+  91            */
+  92          void RedWAI_init(){
+  93   1        Interrupt0_init();
+  94   1        Timer0_Init();
+  95   1      }
+  96          
+  97          /**
+  98            * @brief    在索引号溢出后的操作，停止接收，状态变为0空闲，标志位置1表示接收
              -到了数据
- 114            * @param    无 
- 115            * @retval   无
- 116            */
- 117          void pData_init(){
- 118   1        pData=0;
- 119   1        Red_status=0;
- 120   1        set_InterruptTimer(0x00);
- 121   1        DataFlag=1;  //数据标志位置1
- 122   1      }
- 123          
- 124          /**
- 125            * @brief    获取键值
- 126            * @param    无
- 127            * @retval   返回的键值
- 128            */
- 129          unsigned char  get_Red_Data(){  
- 130   1        if(DataFlag){  //如果存在数据
- 131   2          if(Data[2]==~Data[3] && Data[0]==~Data[1]){  //校验数据完整性
- 132   3            DataFlag=0; 
- 133   3            return Data[2];
- 134   3          }else {
- 135   3            return 0;
- 136   3          }
- 137   2        }else{
- 138   2          return 0;
- 139   2        }
- 140   1      }
- 141          
- 142          //############################---V---定时器和中断相关函数---V-----##############################
-             -#########
- 143          
- 144          /**
- 145            * @brief    初始化外部中断1，用于接收红外下降沿
- 146            * @param    无
- 147            * @retval   无
- 148            */
- 149          void Interrupt0_init(){
- 150   1      //  IT0=1;        //设置为下降沿触发
- 151   1      //  EX0=1;        //打开EX0中断
- 152   1      //  IE0=0;        //中断标志位
- 153   1      
- 154   1        IT0 = 1;      //INT0(P3.2)下降沿中断
- 155   1        EX0 = 1;      //使能INT0中断
- 156   1        IE0=0;        //中断标志位
- 157   1        EA=1;         //打开总中断
- 158   1        PX0=1;        //设置优先级高
- 159   1      }
- 160          
- 161          /**
- 162            * @brief    定时器初始化，用于计数每个下降沿的间隔判断是何信号
- 163            * @param    无
- 164            * @retval   无
- 165            */
- 166          void Timer0_Init(void)    //65536微秒@12.000MHz
- 167          {
- 168   1        AUXR |= 0x80;     //定时器时钟1T模式
- 169   1        TMOD &= 0xF0;     //设置定时器模式
- 170   1        TMOD |= 0x01;     //设置定时器模式
-C51 COMPILER V9.60.7.0   REDWAI                                                            04/10/2026 21:41:41 PAGE 4   
+  99            * @param    无 
+ 100            * @retval   无
+ 101            */
+ 102          void pData_init(){
+ 103   1        pData=0;
+ 104   1        Red_status=0;
+ 105   1        set_InterruptTimer(0x00);
+ 106   1        DataFlag=1;  //数据标志位置1
+ 107   1      }
+ 108          
+C51 COMPILER V9.60.7.0   REDWAI                                                            04/15/2026 22:05:13 PAGE 3   
 
- 171   1        TL0 = 0x0;        //设置定时初始值
- 172   1        TH0 = 0x0;        //设置定时初始值
- 173   1        TF0 = 0;        //清除TF0标志
- 174   1        TR0 = 0;        //定时器0停止计时
- 175   1      }
- 176          void Timer0_Isr(void) interrupt 1
- 177          {
- 178   1            LED=0;
- 179   1            delay(500);
- 180   1      }
- 181          
- 182          /**
- 183            * @brief    给定时器写入值，一般在开始计时时写入0
- 184            * @param    要写入的值，0~65535
- 185            * @retval   无
- 186            */
- 187          void set_InterruptTimer(unsigned int Time){
- 188   1        TH0=Time*0;
- 189   1        TL0=Time*0;
- 190   1      }
- 191          /**
- 192            * @brief    用于打开停止定时器的计时
- 193            * @param    0为停止，1为打开
- 194            * @retval   无
- 195            */
- 196          void run_InterruptTimer(unsigned char Code){
- 197   1        if(Code==1){
- 198   2          TR0 = 1;
- 199   2        }else{
- 200   2          TR0 = 0;
- 201   2        }
- 202   1      }
- 203          
- 204          ///**
- 205          //  * @brief    用于取出定时器的值，一般在计时结束取出
- 206          //  * @param    无
- 207          //  * @retval   取出的时间值，单位us，误差0.5%
- 208          //  */
- 209          //unsigned int read_InterruptTimer(){
- 210          //  unsigned int Num=0;
- 211          //  Num=TH1<<8|TL1;
- 212          //  return (Num/92)*100;
- 213          //}
- 214          
- 215          /**
- 216            * @brief  用于取出定时器的值
- 217            * @param  无
- 218            * @retval 取出的时间值，单位us (12MHz时计数值直接等于微秒)
- 219            */
- 220          unsigned int read_InterruptTimer(void){
- 221   1        unsigned int Num=0;
- 222   1        Num=(unsigned int)TH0<<8|TL0;
- 223   1      //    timeing=Num;
- 224   1        return Num;              // 12MHz下，1个计数就等于1us，直接返回即可
- 225   1      }
- 226          
- 227          //###############################################################################################
- 228          
- 229          
+ 109          /**
+ 110            * @brief    获取键值
+ 111            * @param    无
+ 112            * @retval   返回的键值
+ 113            */
+ 114          unsigned char  get_Red_Data(){  
+ 115   1        
+ 116   1        if(DataFlag){  //如果存在数据
+ 117   2          LED=1;
+ 118   2          if(Data[2]==~Data[3] && Data[0]==~Data[1]){  //校验数据完整性
+ 119   3            DataFlag=0; 
+ 120   3            return Data[2];
+ 121   3          }else {
+ 122   3            return 0;
+ 123   3          }
+ 124   2        }else{
+ 125   2          return 0;
+ 126   2        }
+ 127   1      }
+ 128          
+ 129          //############################---V---定时器和中断相关函数---V-----##############################
+             -#########
+ 130          
+ 131          /**
+ 132            * @brief    初始化外部中断1，用于接收红外下降沿
+ 133            * @param    无
+ 134            * @retval   无
+ 135            */
+ 136          void Interrupt0_init(){
+ 137   1      //  IT0=1;        //设置为下降沿触发
+ 138   1      //  EX0=1;        //打开EX0中断
+ 139   1      //  IE0=0;        //中断标志位
+ 140   1      
+ 141   1        IT0 = 1;      //INT0(P3.2)下降沿中断
+ 142   1        EX0 = 1;      //使能INT0中断
+ 143   1        IE0=0;        //中断标志位
+ 144   1        EA=1;         //打开总中断
+ 145   1        PX0=1;        //设置优先级高
+ 146   1        
+ 147   1      //  IT0 = 1; // 设置INT0为下降沿触发 (千万不要设为0)
+ 148   1      //  EX0 = 1; // 允许INT0中断
+ 149   1      //  EA = 1;  // 开启总中断
+ 150   1      }
+ 151          
+ 152          /**
+ 153            * @brief    定时器初始化，用于计数每个下降沿的间隔判断是何信号
+ 154            * @param    无
+ 155            * @retval   无
+ 156            */
+ 157          //void Timer0_Init(void)    //65536微秒@12.000MHz
+ 158          //{
+ 159          //  AUXR |= 0x80;     //定时器时钟1T模式
+ 160          //  TMOD &= 0xF0;     //设置定时器模式
+ 161          //  TMOD |= 0x01;     //设置定时器模式
+ 162          //  TL0 = 0x0;        //设置定时初始值
+ 163          //  TH0 = 0x0;        //设置定时初始值
+ 164          //  TF0 = 0;        //清除TF0标志
+ 165          //  TR0 = 0;        //定时器0停止计时
+ 166          //}
+ 167          
+ 168          void Timer0_Init(void)    
+ 169          {
+C51 COMPILER V9.60.7.0   REDWAI                                                            04/15/2026 22:05:13 PAGE 4   
+
+ 170   1        // 【核心修改】：把 |= 0x80 改为 &= 0x7F，强制设为 12T 模式！
+ 171   1        // 这样在 12MHz 晶振下，定时器刚好 1微秒(us) 计数加 1。
+ 172   1        AUXR &= 0x7F;     
+ 173   1        
+ 174   1        TMOD &= 0xF0;     // 清除定时器0的模式位
+ 175   1        TMOD |= 0x01;     // 设置定时器模式为 16位不自动重装载 (Mode 1)
+ 176   1        
+ 177   1        TL0 = 0x0;        // 设置定时初始值
+ 178   1        TH0 = 0x0;        // 设置定时初始值
+ 179   1        TF0 = 0;        // 清除TF0标志
+ 180   1        TR0 = 0;        // 初始化时先不开启定时器，等外部下降沿来了再开
+ 181   1      }
+ 182          //void Timer0_Isr(void) interrupt 1
+ 183          //{
+ 184          //      LED=1;
+ 185          //      delay(500);
+ 186          //}
+ 187          
+ 188          /**
+ 189            * @brief    给定时器写入值，一般在开始计时时写入0
+ 190            * @param    要写入的值，0~65535
+ 191            * @retval   无
+ 192            */
+ 193          void set_InterruptTimer(unsigned int Time){
+ 194   1        TH0=Time*0;
+ 195   1        TL0=Time*0;
+ 196   1      }
+ 197          /**
+ 198            * @brief    用于打开停止定时器的计时
+ 199            * @param    0为停止，1为打开
+ 200            * @retval   无
+ 201            */
+ 202          void run_InterruptTimer(unsigned char Code){
+ 203   1        if(Code==1){
+ 204   2          TR0 = 1;
+ 205   2        }else{
+ 206   2          TR0 = 0;
+ 207   2        }
+ 208   1      }
+ 209          
+ 210          ///**
+ 211          //  * @brief    用于取出定时器的值，一般在计时结束取出
+ 212          //  * @param    无
+ 213          //  * @retval   取出的时间值，单位us，误差0.5%
+ 214          //  */
+ 215          //unsigned int read_InterruptTimer(){
+ 216          //  unsigned int Num=0;
+ 217          //  Num=TH1<<8|TL1;
+ 218          //  return (Num/92)*100;
+ 219          //}
+ 220          
+ 221          /**
+ 222            * @brief  用于取出定时器的值
+ 223            * @param  无
+ 224            * @retval 取出的时间值，单位us (12MHz时计数值直接等于微秒)
+ 225            */
+ 226          unsigned int read_InterruptTimer(void){
+ 227   1        static unsigned int Num=0;
+ 228   1        Num=(unsigned int)TH0<<8|TL0;
+ 229   1      //    timeing=Num;
+ 230   1        return Num;              // 12MHz下，1个计数就等于1us，直接返回即可
+ 231   1      }
+C51 COMPILER V9.60.7.0   REDWAI                                                            04/15/2026 22:05:13 PAGE 5   
+
+ 232          
+ 233          //###############################################################################################
+ 234          
+ 235          
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-C51 COMPILER V9.60.7.0   REDWAI                                                            04/10/2026 21:41:41 PAGE 5   
-
-   CODE SIZE        =    480    ----
+   CODE SIZE        =    377    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
-   DATA SIZE        =     12       2
+   DATA SIZE        =     14       2
    IDATA SIZE       =   ----    ----
    BIT SIZE         =   ----    ----
 END OF MODULE INFORMATION.

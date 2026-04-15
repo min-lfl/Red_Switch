@@ -22,15 +22,16 @@ void main(){
 //	Servo_Init();
 	RedWAI_init();
 	Uart_Init();	
-
+	LED=0;
 	while(1){
 		
-		LED=1;
+//		LED=0;
 		Code=get_Red_Data();
 		if(Code!=0){
-			TR0=0;
+			LED=1;
+//			TR0=0;
 			printf("%d \t\n",(int)Code);
-			TR0=1;
+//			TR0=1;
 		}
 //		if(Data[0]!=0){
 //			printf("Data0:%d \t\n",(int)Data[0]);
