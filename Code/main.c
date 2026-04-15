@@ -28,7 +28,7 @@ void main(){
 //		LED=0;
 		Code=get_Red_Data();
 		if(Code!=0){
-			LED=1;
+//			LED=1;
 //			TR0=0;
 			printf("%d \t\n",(int)Code);
 //			TR0=1;
