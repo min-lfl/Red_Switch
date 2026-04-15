@@ -1,6 +1,9 @@
 #ifndef __RedWAI_H__
 #define __RedWAI_H__
 
+//############关于红外接收的宏定义###########
+#define Red_TRx TR0
+
 //############外部中断相关(内部)###########
 void Interrupt0_init(void);												//初始化内部中断
 

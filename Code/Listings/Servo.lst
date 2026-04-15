@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.7.0   SERVO                                                             04/15/2026 22:19:22 PAGE 1   
+C51 COMPILER V9.60.7.0   SERVO                                                             04/15/2026 22:51:29 PAGE 1   
 
 
 C51 COMPILER V9.60.7.0, COMPILATION OF MODULE SERVO
@@ -62,7 +62,7 @@ line level    source
   52          //    if(cnt == 0)
   53          //        PWM_IO = 1;
   54          
-C51 COMPILER V9.60.7.0   SERVO                                                             04/15/2026 22:19:22 PAGE 2   
+C51 COMPILER V9.60.7.0   SERVO                                                             04/15/2026 22:51:29 PAGE 2   
 
   55          //    // 到了应该结束高电平的位置：拉低
   56          //    if(cnt == Actual)
