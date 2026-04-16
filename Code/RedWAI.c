@@ -1,11 +1,4 @@
-#include <stc15w408as.H>
-#include <INTRINS.H> //标准变量库
 #include <RedWAI.H>
-
-#include <DELAY.H>
-
-//调试用的灯
-sbit LED=P2^5;
 
 //############################---V---全局变量区---V-----#################################################
 volatile unsigned int Time=0;  												//用于读取定时器时间
@@ -26,57 +19,57 @@ void Interrupt_Routine() interrupt 0
 	if(Red_status==0){
 		Red_status=1;
 
-		set_InterruptTimer(0x00);	//把定时器装载0
-		Red_TRx=1;		//开启定时器
+		set_InterruptTimer(0x00);								//把定时器装载0
+		Red_TRx=1;															//开启定时器
 	}
 	
 	
 	//状态为1时
 	else if(Red_status==1){
-		Red_TRx=0;		//关闭定时器
-		Time=read_InterruptTimer();	//读取定时器
+		Red_TRx=0;															//关闭定时器
+		Time=read_InterruptTimer();							//读取定时器
 		
-		if(Time>12000 && Time<16000){   //收到开始码，状态置1
+		if(Time>12000 && Time<16000){   				//收到开始码，状态置1
 			Red_status=2;
 			
-			set_InterruptTimer(0x00);									//把定时器装载0
-			Red_TRx=1;												//开启定时器
-		}else{													//都不是，继续回到空闲状态
-			Red_TRx=0;												//关闭定时器
-			set_InterruptTimer(0x00);
-			Red_status=0;
+			set_InterruptTimer(0x00);							//把定时器装载0
+			Red_TRx=1;														//开启定时器
+		}else{																	//都不是，继续回到空闲状态
+			Red_TRx=0;														//关闭定时器
+			set_InterruptTimer(0x00);							//把定时器清零
+			Red_status=0;													//回到空闲状态0
 		}
 	}
 	
 	//状态为2时
 	else if(Red_status==2){
 		//读取计时并且开始清零计时
-		Red_TRx=0;													//关闭定时器
-		Time=read_InterruptTimer();	//读取定时器值
+		Red_TRx=0;															//关闭定时器
+		Time=read_InterruptTimer();							//读取定时器值
 
 		//等于0时
 		if(Time>500 && Time<1600){  
-			set_InterruptTimer(0x00);	//设定初值
-			Red_TRx=1;				//开启定时器
-			Data[pData/8]&=~(0x01<<(pData%8));
-			pData++;
-			if(pData>=32){LED=1;pData_init();}
+			set_InterruptTimer(0x00);							//设定初值
+			Red_TRx=1;														//开启定时器
+			Data[pData/8]&=~(0x01<<(pData%8));		//存入二进制0
+			pData++;															//数据指针+1
+			if(pData>=32){pData_init();}		//判断有没有满32位二进制
 		}
 		
 		//等于1时
 		else if(Time>1700 && Time<2800){  
-			set_InterruptTimer(0x00);	//设定初值
-			Red_TRx=1;		//开启定时器
+			set_InterruptTimer(0x00);							//设定初值
+			Red_TRx=1;														//开启定时器
 			
-			Data[pData/8]|=0x01<<(pData%8);
-			pData++;
-			if(pData>=32){LED=1;pData_init();}
+			Data[pData/8]|=0x01<<(pData%8);				//存入二进制1
+			pData++;															//数据指针+1
+			if(pData>=32){pData_init();}		//判断有没有满32位二进制
 		}
 		//如果数据错误时，结束接收，进入空闲模式等待开始信号
 		else{
-			Red_TRx=0;		//关闭定时器
-			set_InterruptTimer(0x00);
-			pData=0;
+			Red_TRx=0;														//关闭定时器
+			set_InterruptTimer(0x00);							//清零定时器
+			pData=0;															//清零数据指针
 			Red_status=0;
 		}
 	}
@@ -137,11 +130,15 @@ void Interrupt0_init(){
 	IE0=0;     		//中断标志位
 	EA=1;					//打开总中断
 	PX0=1;      	//设置优先级高
-	
 }
 
 
-
+/**
+	* @brief		初始化定时器,12T模式,16位自动重装
+	* @note			注意必须用1T模式,这里需要更改
+	* @param		无
+	* @retval		无
+	*/
 void Timer0_Init(void)		
 {
 	//这里是导致调试了三天的地方,原来默认设置1T模式
@@ -152,13 +149,15 @@ void Timer0_Init(void)
 	TMOD &= 0xF0;			// 清除定时器0的模式位
 	TMOD |= 0x01;			// 设置定时器模式为 16位不自动重装载 (Mode 1)
 	
-	TL0 = 0x0;				// 设置定时初始值
-	TH0 = 0x0;				// 设置定时初始值
-	TF0 = 0;				// 清除TF0标志
-	TR0 = 0;				// 初始化时先不开启定时器，等外部下降沿来了再开
+	Red_TLx = 0x0;				// 设置定时初始值
+	Red_THx = 0x0;				// 设置定时初始值
+	TF0 = 0;					// 清除TF0标志
+	TR0 = 0;					// 初始化时先不开启定时器，等外部下降沿来了再开
 	
-	ET0 = 1; 				//定时器中断
+	ET0 = 1; 					//定时器中断
 }
+
+
 
 //定时器看门狗,如果达到中断还没有来脉冲,就初始化复位
 void Timer0_Routine() interrupt 1 
@@ -175,8 +174,8 @@ void Timer0_Routine() interrupt 1
 	* @retval		无
 	*/
 void set_InterruptTimer(unsigned int Time){
-	TH0=Time>>8;
-	TL0=(unsigned char)Time;
+	Red_THx=Time>>8;
+	Red_TLx=(unsigned char)Time;
 }
 
 
@@ -188,7 +187,7 @@ void set_InterruptTimer(unsigned int Time){
   */
 unsigned int read_InterruptTimer(void){
 	static unsigned int Num=0;
-	Num=(unsigned int)TH0<<8|TL0;
+	Num=(unsigned int)Red_THx<<8|Red_TLx;
   return Num;              					// 12MHz下，1个计数就等于1us，直接返回即可
 }
 
