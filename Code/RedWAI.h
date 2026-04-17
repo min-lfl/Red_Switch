@@ -32,8 +32,8 @@ unsigned int read_InterruptTimer(void);						//读取定时器的值
 void pData_init();																//内部函数，用于准备接收下一个按键
 
 //############红外相关(外部)#############
-void RedWAI_init();																//外部函数,初始化红外
-unsigned char  get_Red_Data();										//获取键码
+void RedWAI_init(void);																//外部函数,初始化红外
+unsigned char get_Red_Data(void);										//获取键码
 
 #endif
 

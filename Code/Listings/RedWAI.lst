@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.7.0   REDWAI                                                            04/16/2026 10:00:10 PAGE 1   
+C51 COMPILER V9.60.7.0   REDWAI                                                            04/17/2026 10:27:04 PAGE 1   
 
 
 C51 COMPILER V9.60.7.0, COMPILATION OF MODULE REDWAI
@@ -62,7 +62,7 @@ line level    source
   46   2          //读取计时并且开始清零计时
   47   2          Red_TRx=0;                              //关闭定时器
   48   2          Time=read_InterruptTimer();             //读取定时器值
-C51 COMPILER V9.60.7.0   REDWAI                                                            04/16/2026 10:00:10 PAGE 2   
+C51 COMPILER V9.60.7.0   REDWAI                                                            04/17/2026 10:27:04 PAGE 2   
 
   49   2      
   50   2          //等于0时
@@ -99,7 +99,7 @@ line level    source
   81            * @param    无
   82            * @retval   无
   83            */
-  84          void RedWAI_init(){
+  84          void RedWAI_init(void){
   85   1        Interrupt0_init();
   86   1        Timer0_Init();
   87   1      }
@@ -110,7 +110,7 @@ line level    source
   91            * @param    无 
   92            * @retval   无
   93            */
-  94          void pData_init(){
+  94          void pData_init(void){
   95   1        pData=0;
   96   1        Red_status=0;
   97   1        set_InterruptTimer(0x00);
@@ -122,11 +122,11 @@ line level    source
  103            * @param    无
  104            * @retval   返回的键值
  105            */
- 106          unsigned char  get_Red_Data(){  
+ 106          unsigned char get_Red_Data(void){  
  107   1        if(DataFlag){  //如果存在数据
  108   2          if(Data[2]==~Data[3] && Data[0]==~Data[1]){  //校验数据完整性
  109   3            DataFlag=0; 
-C51 COMPILER V9.60.7.0   REDWAI                                                            04/16/2026 10:00:10 PAGE 3   
+C51 COMPILER V9.60.7.0   REDWAI                                                            04/17/2026 10:27:04 PAGE 3   
 
  110   3            return Data[2];
  111   3          }else {
@@ -146,7 +146,7 @@ line level    source
  124            * @param    无
  125            * @retval   无
  126            */
- 127          void Interrupt0_init(){
+ 127          void Interrupt0_init(void){
  128   1        IT0 = 1;      //INT0(P3.2)下降沿中断
  129   1        EX0 = 1;      //使能INT0中断
  130   1        IE0=0;        //中断标志位
@@ -190,7 +190,7 @@ line level    source
  168   1      }
  169          
  170          
-C51 COMPILER V9.60.7.0   REDWAI                                                            04/16/2026 10:00:10 PAGE 4   
+C51 COMPILER V9.60.7.0   REDWAI                                                            04/17/2026 10:27:04 PAGE 4   
 
  171          /**
  172            * @brief    给定时器写入值，一般在开始计时时写入0

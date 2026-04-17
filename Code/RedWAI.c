@@ -81,7 +81,7 @@ void Interrupt_Routine() interrupt 0
 	* @param		无
 	* @retval		无
 	*/
-void RedWAI_init(){
+void RedWAI_init(void){
 	Interrupt0_init();
 	Timer0_Init();
 }
@@ -91,7 +91,7 @@ void RedWAI_init(){
 	* @param		无	
 	* @retval		无
 	*/
-void pData_init(){
+void pData_init(void){
 	pData=0;
 	Red_status=0;
 	set_InterruptTimer(0x00);
@@ -103,7 +103,7 @@ void pData_init(){
 	* @param		无
 	* @retval		返回的键值
 	*/
-unsigned char  get_Red_Data(){  
+unsigned char get_Red_Data(void){  
 	if(DataFlag){  //如果存在数据
 		if(Data[2]==~Data[3] && Data[0]==~Data[1]){  //校验数据完整性
 			DataFlag=0; 
@@ -124,7 +124,7 @@ unsigned char  get_Red_Data(){
 	* @param		无
 	* @retval		无
 	*/
-void Interrupt0_init(){
+void Interrupt0_init(void){
 	IT0 = 1;			//INT0(P3.2)下降沿中断
 	EX0 = 1;			//使能INT0中断
 	IE0=0;     		//中断标志位
