@@ -46,8 +46,13 @@
 | **休眠阶段** | 释放 MOS 管，切断舵机供电 | MCU 重新进入睡眠模式 |
 
 ---
+## 5. 部分电路图
+<img width="1431" height="654" alt="image" src="https://github.com/user-attachments/assets/5a066fdc-69b8-4900-9518-54cacffdddd8" />
+原理图是按工业级鲁棒性标准绘制的
+<img width="798" height="600" alt="image" src="https://github.com/user-attachments/assets/4c742c8b-9fab-4b55-aaff-26c120af3a29" />
+PCB经过过次排版布线,已经保证电气性能最佳了
 
-## 5. 测试数据
+## 6. 测试数据
 *   **输入电压**：DC 3.7V - 4.2V
 *   **待机电流**：< 200uA (微安)
 *   **单次响应时间**：约 200ms - 500ms (取决于睡眠唤醒延迟)
@@ -55,7 +60,7 @@
 
 ---
 
-## 6. 获取与支持
+## 7. 获取与支持
 如果你对该项目感兴趣，可以通过以下方式参与讨论或获取资料：
 *   **固件烧录**：使用 STC-ISP 软件。
 *   **机械结构**：建议使用 PLA 材料 3D 打印。
