@@ -324,7 +324,7 @@
               <MiscControls></MiscControls>
               <Define></Define>
               <Undefine></Undefine>
-              <IncludePath></IncludePath>
+              <IncludePath>.\Drivers</IncludePath>
             </VariousControls>
           </C51>
           <Ax51>
@@ -381,70 +381,75 @@
               <FileType>1</FileType>
               <FilePath>.\main.c</FilePath>
             </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Drivers</GroupName>
+          <Files>
             <File>
-              <FileName>stc15w408as.h</FileName>
+              <FileName>EEROM.h</FileName>
               <FileType>5</FileType>
-              <FilePath>.\stc15w408as.h</FilePath>
-            </File>
-            <File>
-              <FileName>delay.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\delay.c</FilePath>
-            </File>
-            <File>
-              <FileName>delay.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\delay.h</FilePath>
-            </File>
-            <File>
-              <FileName>Servo.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Servo.c</FilePath>
-            </File>
-            <File>
-              <FileName>Servo.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\Servo.h</FilePath>
+              <FilePath>.\Drivers\EEROM.h</FilePath>
             </File>
             <File>
               <FileName>RedWAI.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\RedWAI.c</FilePath>
+              <FilePath>.\Drivers\RedWAI.c</FilePath>
             </File>
             <File>
               <FileName>RedWAI.h</FileName>
               <FileType>5</FileType>
-              <FilePath>.\RedWAI.h</FilePath>
+              <FilePath>.\Drivers\RedWAI.h</FilePath>
             </File>
             <File>
-              <FileName>uart.h</FileName>
+              <FileName>Servo.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Drivers\Servo.c</FilePath>
+            </File>
+            <File>
+              <FileName>Servo.h</FileName>
               <FileType>5</FileType>
-              <FilePath>.\uart.h</FilePath>
+              <FilePath>.\Drivers\Servo.h</FilePath>
+            </File>
+            <File>
+              <FileName>stc15w408as.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Drivers\stc15w408as.h</FilePath>
             </File>
             <File>
               <FileName>uart.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\uart.c</FilePath>
+              <FilePath>.\Drivers\uart.c</FilePath>
             </File>
             <File>
-              <FileName>EEROM.h</FileName>
+              <FileName>uart.h</FileName>
               <FileType>5</FileType>
-              <FilePath>.\EEROM.h</FilePath>
-            </File>
-            <File>
-              <FileName>EEROM.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\EEROM.c</FilePath>
-            </File>
-            <File>
-              <FileName>vcc.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\vcc.h</FilePath>
+              <FilePath>.\Drivers\uart.h</FilePath>
             </File>
             <File>
               <FileName>vcc.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\vcc.c</FilePath>
+              <FilePath>.\Drivers\vcc.c</FilePath>
+            </File>
+            <File>
+              <FileName>vcc.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Drivers\vcc.h</FilePath>
+            </File>
+            <File>
+              <FileName>delay.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Drivers\delay.c</FilePath>
+            </File>
+            <File>
+              <FileName>delay.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\Drivers\delay.h</FilePath>
+            </File>
+            <File>
+              <FileName>EEROM.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Drivers\EEROM.c</FilePath>
             </File>
           </Files>
         </Group>

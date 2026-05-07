@@ -1,10 +1,10 @@
 ".\Objects\main.obj",
-".\Objects\delay.obj",
-".\Objects\Servo.obj",
 ".\Objects\RedWAI.obj",
+".\Objects\Servo.obj",
 ".\Objects\uart.obj",
-".\Objects\EEROM.obj",
-".\Objects\vcc.obj" 
+".\Objects\vcc.obj",
+".\Objects\delay.obj",
+".\Objects\EEROM.obj" 
 TO ".\Objects\project" 
 PRINT(".\Listings\project.m51") RAMSIZE(256) 
 DISABLEWARNING (16) 

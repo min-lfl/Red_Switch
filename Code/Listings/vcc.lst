@@ -1,10 +1,10 @@
-C51 COMPILER V9.60.7.0   VCC                                                               05/07/2026 20:18:26 PAGE 1   
+C51 COMPILER V9.60.7.0   VCC                                                               05/07/2026 20:48:01 PAGE 1   
 
 
 C51 COMPILER V9.60.7.0, COMPILATION OF MODULE VCC
 OBJECT MODULE PLACED IN .\Objects\vcc.obj
-COMPILER INVOKED BY: D:\Keil_v5\C51\C51\BIN\C51.EXE vcc.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\v
-                    -cc.lst) TABS(2) OBJECT(.\Objects\vcc.obj)
+COMPILER INVOKED BY: D:\Keil_v5\C51\C51\BIN\C51.EXE Drivers\vcc.c OPTIMIZE(8,SPEED) BROWSE INCDIR(.\Drivers) DEBUG OBJEC
+                    -TEXTEND PRINT(.\Listings\vcc.lst) TABS(2) OBJECT(.\Objects\vcc.obj)
 
 line level    source
 
@@ -62,7 +62,7 @@ line level    source
   51   1      
   52   1          return (uint16_t)vcc_mv;
   53   1      }
-C51 COMPILER V9.60.7.0   VCC                                                               05/07/2026 20:18:26 PAGE 2   
+C51 COMPILER V9.60.7.0   VCC                                                               05/07/2026 20:48:01 PAGE 2   
 
 
 

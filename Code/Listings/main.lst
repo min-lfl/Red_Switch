@@ -1,10 +1,10 @@
-C51 COMPILER V9.60.7.0   MAIN                                                              05/07/2026 20:18:26 PAGE 1   
+C51 COMPILER V9.60.7.0   MAIN                                                              05/07/2026 20:48:00 PAGE 1   
 
 
 C51 COMPILER V9.60.7.0, COMPILATION OF MODULE MAIN
 OBJECT MODULE PLACED IN .\Objects\main.obj
-COMPILER INVOKED BY: D:\Keil_v5\C51\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\
-                    -main.lst) TABS(2) OBJECT(.\Objects\main.obj)
+COMPILER INVOKED BY: D:\Keil_v5\C51\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE INCDIR(.\Drivers) DEBUG OBJECTEXTEND
+                    - PRINT(.\Listings\main.lst) TABS(2) OBJECT(.\Objects\main.obj)
 
 line level    source
 
@@ -62,7 +62,7 @@ line level    source
   52   1        
   53   1        Red_RED_Key(Keynum_r);
   54   1        
-C51 COMPILER V9.60.7.0   MAIN                                                              05/07/2026 20:18:26 PAGE 2   
+C51 COMPILER V9.60.7.0   MAIN                                                              05/07/2026 20:48:00 PAGE 2   
 
   55   1        while(1)
   56   1        {
@@ -126,7 +126,7 @@ line level    source
  113   2          
  114   2          // ==========================================
  115   2          // 模块3：修改键值模块
-C51 COMPILER V9.60.7.0   MAIN                                                              05/07/2026 20:18:26 PAGE 3   
+C51 COMPILER V9.60.7.0   MAIN                                                              05/07/2026 20:48:00 PAGE 3   
 
  116   2          // ==========================================
  117   2          //进入修改键值模式
@@ -190,7 +190,7 @@ line level    source
  175   3            _nop_();
  176   3          }
  177   2              
-C51 COMPILER V9.60.7.0   MAIN                                                              05/07/2026 20:18:26 PAGE 4   
+C51 COMPILER V9.60.7.0   MAIN                                                              05/07/2026 20:48:00 PAGE 4   
 
  178   2          // 如果 Red_status 不为 0，说明红外正在接收中<不能休眠>
  179   2          else 
@@ -254,7 +254,7 @@ line level    source
  237   1        if(Power_lower_status!=1){
  238   2          LED=1;    //打开电源指示灯
  239   2          Sg90=0;   //给舵机供电
-C51 COMPILER V9.60.7.0   MAIN                                                              05/07/2026 20:18:26 PAGE 5   
+C51 COMPILER V9.60.7.0   MAIN                                                              05/07/2026 20:48:00 PAGE 5   
 
  240   2          CR = 1;   //打开PCA计数
  241   2        }else{  //如果低电量了,就光闪灯不启动舵机
