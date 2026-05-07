@@ -39,11 +39,11 @@ void Open_All_Power(void);								//打开所有电源
 void Close_All_Power(void);								//关闭所有电源
 
 void Ext_Init(void);											//外部中断1的配置
+void System_Init(void);
 
 void main(){
 	/* 初始化区 */
-	P2M0 |= 0x60; P2M1 &= ~0x60; 	//LED和SG90推挽输出
-	LED=0;
+	System_Init();
 	
 	RedWAI_init();
 	Uart_Init();	
@@ -213,6 +213,21 @@ void Ext_Init(void)
 {
 	IT1 = 1;			//INT1(P3.3)下降沿中断
 	EX1 = 1;			//使能INT1中断
+}
+
+//系统初始化,设置悬空引脚
+void System_Init(void){
+	//全部设置为推挽输出并且拉低
+	P1M0 = 0xfd; P1M1 = 0x00; 
+	P2M0 = 0xff; P2M1 = 0x00; 
+	P3M0 = 0xf0; P3M1 = 0x00; 
+	P5M0 = 0xff; P5M1 = 0x00; 
+	P1=0x00;
+	P2=0x00;
+	P34=0;P35=0;P36=0;P37=0;
+	P5=0x00;
+	
+	LED=0;Sg90=1;
 }
 
 

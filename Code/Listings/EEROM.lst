@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.7.0   EEROM                                                             05/07/2026 19:10:52 PAGE 1   
+C51 COMPILER V9.60.7.0   EEROM                                                             05/07/2026 20:18:26 PAGE 1   
 
 
 C51 COMPILER V9.60.7.0, COMPILATION OF MODULE EEROM
@@ -62,7 +62,7 @@ line level    source
   52          
   53          // 在指定地址写入一个字节
   54          void EEPROM_Write(uint16_t addr, uint8_t dat) {
-C51 COMPILER V9.60.7.0   EEROM                                                             05/07/2026 19:10:52 PAGE 2   
+C51 COMPILER V9.60.7.0   EEROM                                                             05/07/2026 20:18:26 PAGE 2   
 
   55   1          IAP_CONTR = 0x80 | WT_24M;
   56   1          IAP_CMD = CMD_WRITE;

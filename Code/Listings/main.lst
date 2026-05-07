@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.7.0   MAIN                                                              05/07/2026 19:10:51 PAGE 1   
+C51 COMPILER V9.60.7.0   MAIN                                                              05/07/2026 20:18:26 PAGE 1   
 
 
 C51 COMPILER V9.60.7.0, COMPILATION OF MODULE MAIN
@@ -49,11 +49,11 @@ line level    source
   39          void Close_All_Power(void);               //关闭所有电源
   40          
   41          void Ext_Init(void);                      //外部中断1的配置
-  42          
-  43          void main(){
-  44   1        /* 初始化区 */
-  45   1        P2M0 |= 0x60; P2M1 &= ~0x60;  //LED和SG90推挽输出
-  46   1        LED=0;
+  42          void System_Init(void);
+  43          
+  44          void main(){
+  45   1        /* 初始化区 */
+  46   1        System_Init();
   47   1        
   48   1        RedWAI_init();
   49   1        Uart_Init();  
@@ -62,7 +62,7 @@ line level    source
   52   1        
   53   1        Red_RED_Key(Keynum_r);
   54   1        
-C51 COMPILER V9.60.7.0   MAIN                                                              05/07/2026 19:10:51 PAGE 2   
+C51 COMPILER V9.60.7.0   MAIN                                                              05/07/2026 20:18:26 PAGE 2   
 
   55   1        while(1)
   56   1        {
@@ -126,7 +126,7 @@ line level    source
  113   2          
  114   2          // ==========================================
  115   2          // 模块3：修改键值模块
-C51 COMPILER V9.60.7.0   MAIN                                                              05/07/2026 19:10:51 PAGE 3   
+C51 COMPILER V9.60.7.0   MAIN                                                              05/07/2026 20:18:26 PAGE 3   
 
  116   2          // ==========================================
  117   2          //进入修改键值模式
@@ -190,7 +190,7 @@ line level    source
  175   3            _nop_();
  176   3          }
  177   2              
-C51 COMPILER V9.60.7.0   MAIN                                                              05/07/2026 19:10:51 PAGE 4   
+C51 COMPILER V9.60.7.0   MAIN                                                              05/07/2026 20:18:26 PAGE 4   
 
  178   2          // 如果 Red_status 不为 0，说明红外正在接收中<不能休眠>
  179   2          else 
@@ -232,49 +232,64 @@ line level    source
  215   1        EX1 = 1;      //使能INT1中断
  216   1      }
  217          
- 218          
- 219          //打开所有电源
- 220          void Open_All_Power(void){
- 221   1        //前提是低电量标志位不为1
- 222   1        if(Power_lower_status!=1){
- 223   2          LED=1;    //打开电源指示灯
- 224   2          Sg90=0;   //给舵机供电
- 225   2          CR = 1;   //打开PCA计数
- 226   2        }else{  //如果低电量了,就光闪灯不启动舵机
- 227   2          //3500-3400就闪烁4次,
- 228   2          //3400-3300就闪烁3次,
- 229   2          //3300-3200就闪烁2次,
- 230   2          //3200-3100就闪烁1次,
- 231   2          //3100以下不再闪烁,此时非常危险了,必须马上充电
- 232   2          for(i=0;i<(Power_VCC-3000)/100;i++){
- 233   3            LED=1;
- 234   3            delay(300);
- 235   3            LED=0;
- 236   3            delay(300);
- 237   3          }
- 238   2          if(Power_VCC<3100){
- 239   3            Close_All_Power();  //关闭所有电源
-C51 COMPILER V9.60.7.0   MAIN                                                              05/07/2026 19:10:51 PAGE 5   
+ 218          //系统初始化,设置悬空引脚
+ 219          void System_Init(void){
+ 220   1        //全部设置为推挽输出并且拉低
+ 221   1        P1M0 = 0xfd; P1M1 = 0x00; 
+ 222   1        P2M0 = 0xff; P2M1 = 0x00; 
+ 223   1        P3M0 = 0xf0; P3M1 = 0x00; 
+ 224   1        P5M0 = 0xff; P5M1 = 0x00; 
+ 225   1        P1=0x00;
+ 226   1        P2=0x00;
+ 227   1        P34=0;P35=0;P36=0;P37=0;
+ 228   1        P5=0x00;
+ 229   1        
+ 230   1        LED=0;Sg90=1;
+ 231   1      }
+ 232          
+ 233          
+ 234          //打开所有电源
+ 235          void Open_All_Power(void){
+ 236   1        //前提是低电量标志位不为1
+ 237   1        if(Power_lower_status!=1){
+ 238   2          LED=1;    //打开电源指示灯
+ 239   2          Sg90=0;   //给舵机供电
+C51 COMPILER V9.60.7.0   MAIN                                                              05/07/2026 20:18:26 PAGE 5   
 
- 240   3            EA=0;
- 241   3          }
- 242   2        }
- 243   1      }
- 244          
- 245          //关闭所有电源
- 246          void Close_All_Power(void){
- 247   1        LED=0;    //关闭电源指示灯
- 248   1        Sg90=1;   //给舵机断电
- 249   1        CR = 0;
- 250   1      }
- 251          
- 252          
- 253          
- 254          
+ 240   2          CR = 1;   //打开PCA计数
+ 241   2        }else{  //如果低电量了,就光闪灯不启动舵机
+ 242   2          //3500-3400就闪烁4次,
+ 243   2          //3400-3300就闪烁3次,
+ 244   2          //3300-3200就闪烁2次,
+ 245   2          //3200-3100就闪烁1次,
+ 246   2          //3100以下不再闪烁,此时非常危险了,必须马上充电
+ 247   2          for(i=0;i<(Power_VCC-3000)/100;i++){
+ 248   3            LED=1;
+ 249   3            delay(300);
+ 250   3            LED=0;
+ 251   3            delay(300);
+ 252   3          }
+ 253   2          if(Power_VCC<3100){
+ 254   3            Close_All_Power();  //关闭所有电源
+ 255   3            EA=0;
+ 256   3          }
+ 257   2        }
+ 258   1      }
+ 259          
+ 260          //关闭所有电源
+ 261          void Close_All_Power(void){
+ 262   1        LED=0;    //关闭电源指示灯
+ 263   1        Sg90=1;   //给舵机断电
+ 264   1        CR = 0;
+ 265   1      }
+ 266          
+ 267          
+ 268          
+ 269          
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    503    ----
+   CODE SIZE        =    538    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----

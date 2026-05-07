@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.7.0   SERVO                                                             05/07/2026 19:10:52 PAGE 1   
+C51 COMPILER V9.60.7.0   SERVO                                                             05/07/2026 20:18:26 PAGE 1   
 
 
 C51 COMPILER V9.60.7.0, COMPILATION OF MODULE SERVO
@@ -62,7 +62,7 @@ line level    source
   52   1          // --- 通道1中断：到达总周期时间，拉高电平并清空计数器 ---
   53   1          if (CCF1)
   54   1          {
-C51 COMPILER V9.60.7.0   SERVO                                                             05/07/2026 19:10:52 PAGE 2   
+C51 COMPILER V9.60.7.0   SERVO                                                             05/07/2026 20:18:26 PAGE 2   
 
   55   2              CCF1 = 0;       // 清空中断标志位
   56   2              PWM_PIN = 1;    // 输出高电平
