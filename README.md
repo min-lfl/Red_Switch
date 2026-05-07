@@ -51,6 +51,8 @@
 原理图是按工业级鲁棒性标准绘制的
 <img width="798" height="600" alt="image" src="https://github.com/user-attachments/assets/4c742c8b-9fab-4b55-aaff-26c120af3a29" />
 PCB经过过次排版布线,已经保证电气性能最佳了
+<img width="2275" height="1279" alt="a2cf2fbf40ec88fe828268690360cb36" src="https://github.com/user-attachments/assets/2a41ce19-fa99-4a20-868e-b2147f228481" />
+焊接后的效果图
 
 ## 6. 测试数据
 *   **输入电压**：DC 3.7V - 4.2V
