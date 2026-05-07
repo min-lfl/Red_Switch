@@ -426,6 +426,26 @@
               <FileType>1</FileType>
               <FilePath>.\uart.c</FilePath>
             </File>
+            <File>
+              <FileName>EEROM.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\EEROM.h</FilePath>
+            </File>
+            <File>
+              <FileName>EEROM.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\EEROM.c</FilePath>
+            </File>
+            <File>
+              <FileName>vcc.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\vcc.h</FilePath>
+            </File>
+            <File>
+              <FileName>vcc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\vcc.c</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>

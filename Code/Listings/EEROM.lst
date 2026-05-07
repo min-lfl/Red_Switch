@@ -1,0 +1,121 @@
+C51 COMPILER V9.60.7.0   EEROM                                                             05/07/2026 19:10:52 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE EEROM
+OBJECT MODULE PLACED IN .\Objects\EEROM.obj
+COMPILER INVOKED BY: D:\Keil_v5\C51\C51\BIN\C51.EXE EEROM.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings
+                    -\EEROM.lst) TABS(2) OBJECT(.\Objects\EEROM.obj)
+
+line level    source
+
+   1          #include "EEROM.h"
+   2          
+   3          // --- IAP 命令定义 ---
+   4          #define CMD_IDLE    0
+   5          #define CMD_READ    1
+   6          #define CMD_WRITE   2
+   7          #define CMD_ERASE   3
+   8          
+   9          // --- 等待时间设置 (针对不同主频) ---
+  10          // 如果你的主频在 24MHz 以下，设为 0x02 比较稳
+  11          #define WT_24M      0x02 
+  12          
+  13          //==========================
+  14          /***基础函数部分***/
+  15          //==========================
+  16          // 关闭 IAP，回到安全状态
+  17          void IAP_Disable() {
+  18   1          IAP_CONTR = 0;
+  19   1          IAP_CMD = 0;
+  20   1          IAP_TRIG = 0;
+  21   1          IAP_ADDRH = 0xFF; // 指向非法区域防止误触发
+  22   1          IAP_ADDRL = 0xFF;
+  23   1      }
+  24          
+  25          // 从指定地址读取一个字节
+  26          uint8_t EEPROM_Read(uint16_t addr){
+  27   1          uint8_t dat;
+  28   1          IAP_CONTR = 0x80 | WT_24M; // 开启 IAP 模块
+  29   1          IAP_CMD = CMD_READ;        // 设置读取命令
+  30   1          IAP_ADDRH = addr >> 8;     // 设置高8位地址
+  31   1          IAP_ADDRL = addr;          // 设置低8位地址
+  32   1          IAP_TRIG = 0x5A;           // 触发序列 1
+  33   1          IAP_TRIG = 0xA5;           // 触发序列 2
+  34   1          _nop_();                   // 必须等待
+  35   1          dat = IAP_DATA;            // 读取数据
+  36   1          IAP_Disable();             // 及时关闭
+  37   1          return dat;
+  38   1      }
+  39          
+  40          // 擦除一个扇区 (STC15 一个扇区是 512 字节)
+  41          // 注意：写新数据前，必须先擦除！
+  42          void EEPROM_SectorErase(uint16_t addr) {
+  43   1          IAP_CONTR = 0x80 | WT_24M;
+  44   1          IAP_CMD = CMD_ERASE;
+  45   1          IAP_ADDRH = addr >> 8;
+  46   1          IAP_ADDRL = addr;
+  47   1          IAP_TRIG = 0x5A;
+  48   1          IAP_TRIG = 0xA5;
+  49   1          _nop_();
+  50   1          IAP_Disable();
+  51   1      }
+  52          
+  53          // 在指定地址写入一个字节
+  54          void EEPROM_Write(uint16_t addr, uint8_t dat) {
+C51 COMPILER V9.60.7.0   EEROM                                                             05/07/2026 19:10:52 PAGE 2   
+
+  55   1          IAP_CONTR = 0x80 | WT_24M;
+  56   1          IAP_CMD = CMD_WRITE;
+  57   1          IAP_ADDRH = addr >> 8;
+  58   1          IAP_ADDRL = addr;
+  59   1          IAP_DATA = dat;            // 放入要写的数据
+  60   1          IAP_TRIG = 0x5A;
+  61   1          IAP_TRIG = 0xA5;
+  62   1          _nop_();
+  63   1          IAP_Disable();
+  64   1      }
+  65          
+  66          //==========================
+  67          /***用户函数部分(项目差异)***/
+  68          //==========================
+  69          
+  70          
+  71          /**
+  72            * @brief    写入函数,用于存储键值
+  73            * @note     固定占用0x0000地址到0x0004地址下的ROM空间
+  74            * @param    需要保存的键值,一共两个,前一个开灯,后一个关灯,以数组形式传入
+  75            * @retval   无
+  76            */
+  77          void Write_RED_Key(uint8_t* keynum){
+  78   1        EEPROM_SectorErase(0x0000);     //写之前必须先擦除整个扇区 (512字节都会被擦成 0xFF)
+  79   1        
+  80   1        
+  81   1        EEPROM_Write(0x0000,keynum[0]); //写入开灯码
+  82   1        EEPROM_Write(0x0001,keynum[1]); //写入关灯码
+  83   1      }
+  84          
+  85          
+  86          /**
+  87            * @brief    读取函数,用于读取键值
+  88            * @note     固定占用0x0000地址到0x0004地址下的ROM空间
+  89            * @param    需要读取后存放进去的数组
+  90            * @retval   无
+  91            */
+  92          void Red_RED_Key(uint8_t* keynum){
+  93   1        keynum[0] = EEPROM_Read(0x0000);
+  94   1        keynum[1] = EEPROM_Read(0x0001);
+  95   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    154    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       3
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

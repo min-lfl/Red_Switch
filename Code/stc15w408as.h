@@ -8,6 +8,11 @@
 #include "stdio.h"
 #include "intrins.h"
 
+/***宏定义---统一语法格式***/
+typedef unsigned long	uint32_t;
+typedef unsigned int	uint16_t; 
+typedef unsigned char uint8_t; 
+
 /////////////////////////////////////////////////
 
 sfr         P0          =           0x80;
