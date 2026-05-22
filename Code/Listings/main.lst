@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.7.0   MAIN                                                              05/07/2026 20:48:00 PAGE 1   
+C51 COMPILER V9.60.7.0   MAIN                                                              05/23/2026 00:16:43 PAGE 1   
 
 
 C51 COMPILER V9.60.7.0, COMPILATION OF MODULE MAIN
@@ -60,9 +60,9 @@ line level    source
   50   1        PCA_Init();
   51   1        Ext_Init();
   52   1        
-  53   1        Red_RED_Key(Keynum_r);
-  54   1        
-C51 COMPILER V9.60.7.0   MAIN                                                              05/07/2026 20:48:00 PAGE 2   
+  53   1        Red_RED_Key(Keynum_r);            //读取键值,写入缓存
+  54   1        Power_VCC=Get_Battery_Voltage();  //读取电压,写入缓存
+C51 COMPILER V9.60.7.0   MAIN                                                              05/23/2026 00:16:43 PAGE 2   
 
   55   1        while(1)
   56   1        {
@@ -79,11 +79,11 @@ line level    source
   66   3            if(Code==Keynum_r[0]){
   67   4              Angle=45;
   68   4              Servo_Set(Angle); //刷新舵机角度,完成控制
-  69   4              delay(400);
+  69   4              delay(500+((4200-Power_VCC)/10));
   70   4              
   71   4              Angle=0;
-  72   4              Servo_Set(Angle); //刷新舵机角度,完成控制
-  73   4              delay(30);
+  72   4              Servo_Set(Angle); //增程控制
+  73   4              delay(50+((4200-Power_VCC)/20));
   74   4              
   75   4              Angle=90;
   76   4              Servo_Set(Angle); //刷新舵机角度,完成复位
@@ -93,11 +93,11 @@ line level    source
   80   4              
   81   4              Angle=135;
   82   4              Servo_Set(Angle); //刷新舵机角度,完成控制
-  83   4              delay(400);
+  83   4              delay(500+((4200-Power_VCC)/10));
   84   4              
   85   4              Angle=180;
-  86   4              Servo_Set(Angle); //刷新舵机角度,完成控制
-  87   4              delay(30);
+  86   4              Servo_Set(Angle); //增程控制
+  87   4              delay(0+((4200-Power_VCC)/20));
   88   4              
   89   4              Angle=90;
   90   4              Servo_Set(Angle); //刷新舵机角度,完成复位
@@ -126,7 +126,7 @@ line level    source
  113   2          
  114   2          // ==========================================
  115   2          // 模块3：修改键值模块
-C51 COMPILER V9.60.7.0   MAIN                                                              05/07/2026 20:48:00 PAGE 3   
+C51 COMPILER V9.60.7.0   MAIN                                                              05/23/2026 00:16:43 PAGE 3   
 
  116   2          // ==========================================
  117   2          //进入修改键值模式
@@ -190,7 +190,7 @@ line level    source
  175   3            _nop_();
  176   3          }
  177   2              
-C51 COMPILER V9.60.7.0   MAIN                                                              05/07/2026 20:48:00 PAGE 4   
+C51 COMPILER V9.60.7.0   MAIN                                                              05/23/2026 00:16:43 PAGE 4   
 
  178   2          // 如果 Red_status 不为 0，说明红外正在接收中<不能休眠>
  179   2          else 
@@ -254,7 +254,7 @@ line level    source
  237   1        if(Power_lower_status!=1){
  238   2          LED=1;    //打开电源指示灯
  239   2          Sg90=0;   //给舵机供电
-C51 COMPILER V9.60.7.0   MAIN                                                              05/07/2026 20:48:00 PAGE 5   
+C51 COMPILER V9.60.7.0   MAIN                                                              05/23/2026 00:16:43 PAGE 5   
 
  240   2          CR = 1;   //打开PCA计数
  241   2        }else{  //如果低电量了,就光闪灯不启动舵机
@@ -289,7 +289,7 @@ line level    source
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    538    ----
+   CODE SIZE        =    636    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----

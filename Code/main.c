@@ -50,8 +50,8 @@ void main(){
 	PCA_Init();
 	Ext_Init();
 	
-	Red_RED_Key(Keynum_r);
-	
+	Red_RED_Key(Keynum_r);						//读取键值,写入缓存
+	Power_VCC=Get_Battery_Voltage();	//读取电压,写入缓存
 	while(1)
 	{
 		// ==========================================
@@ -66,11 +66,11 @@ void main(){
 			if(Code==Keynum_r[0]){
 				Angle=45;
 				Servo_Set(Angle);	//刷新舵机角度,完成控制
-				delay(400);
+				delay(500+((4200-Power_VCC)/10));
 				
 				Angle=0;
-				Servo_Set(Angle);	//刷新舵机角度,完成控制
-				delay(30);
+				Servo_Set(Angle);	//增程控制
+				delay(50+((4200-Power_VCC)/20));
 				
 				Angle=90;
 				Servo_Set(Angle);	//刷新舵机角度,完成复位
@@ -80,11 +80,11 @@ void main(){
 				
 				Angle=135;
 				Servo_Set(Angle);	//刷新舵机角度,完成控制
-				delay(400);
+				delay(500+((4200-Power_VCC)/10));
 				
 				Angle=180;
-				Servo_Set(Angle);	//刷新舵机角度,完成控制
-				delay(30);
+				Servo_Set(Angle);	//增程控制
+				delay(0+((4200-Power_VCC)/20));
 				
 				Angle=90;
 				Servo_Set(Angle);	//刷新舵机角度,完成复位
